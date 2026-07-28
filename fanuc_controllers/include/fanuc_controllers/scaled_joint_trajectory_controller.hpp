@@ -35,6 +35,8 @@ public:
   double first_order_lag_filter(const double filter_input);
 
 private:
+  std::string prefix_;
+
   bool last_is_connected_ = false;
   std::atomic<int> time_scale_value_{ 100 };  // Default to 100% (no scaling)
   rclcpp::Time last_scaled_time_;
