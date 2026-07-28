@@ -36,6 +36,8 @@ void CfgForceSensor(const std::shared_ptr<fanuc_msgs::srv::CfgForceSensor::Reque
 
 controller_interface::CallbackReturn FanucForceSensorBroadcaster::on_init()
 {
+  get_node()->declare_parameter<std::string>("prefix", "");
+  get_node()->get_parameter("prefix", prefix_);
   return controller_interface::CallbackReturn::SUCCESS;
 }
 
@@ -71,19 +73,19 @@ FanucForceSensorBroadcaster::on_configure(const rclcpp_lifecycle::State& previou
 
   size_t state_interface_index = 0;
   index_force_sensor_[0] = state_interface_index++;
-  state_interface_configuration_.names.push_back(std::string(kForceInterfaceName) + "/" + kForceXType);
+  state_interface_configuration_.names.push_back(prefix_ + kForceInterfaceName + "/" + kForceXType);
   index_force_sensor_[1] = state_interface_index++;
-  state_interface_configuration_.names.push_back(std::string(kForceInterfaceName) + "/" + kForceYType);
+  state_interface_configuration_.names.push_back(prefix_ + kForceInterfaceName + "/" + kForceYType);
   index_force_sensor_[2] = state_interface_index++;
-  state_interface_configuration_.names.push_back(std::string(kForceInterfaceName) + "/" + kForceZType);
+  state_interface_configuration_.names.push_back(prefix_ + kForceInterfaceName + "/" + kForceZType);
   index_force_sensor_[3] = state_interface_index++;
-  state_interface_configuration_.names.push_back(std::string(kForceInterfaceName) + "/" + kMomentXType);
+  state_interface_configuration_.names.push_back(prefix_ + kForceInterfaceName + "/" + kMomentXType);
   index_force_sensor_[4] = state_interface_index++;
-  state_interface_configuration_.names.push_back(std::string(kForceInterfaceName) + "/" + kMomentYType);
+  state_interface_configuration_.names.push_back(prefix_ + kForceInterfaceName + "/" + kMomentYType);
   index_force_sensor_[5] = state_interface_index++;
-  state_interface_configuration_.names.push_back(std::string(kForceInterfaceName) + "/" + kMomentZType);
+  state_interface_configuration_.names.push_back(prefix_ + kForceInterfaceName + "/" + kMomentZType);
   index_force_sensor_[6] = state_interface_index++;
-  state_interface_configuration_.names.push_back(std::string(kForceInterfaceName) + "/" + kForceSensorType);
+  state_interface_configuration_.names.push_back(prefix_ + kForceInterfaceName + "/" + kForceSensorType);
 
   force_sensor_publisher_ =
       get_node()->create_publisher<fanuc_msgs::msg::ForceSensor>("~/force_sensor", rclcpp::QoS(1).reliable());

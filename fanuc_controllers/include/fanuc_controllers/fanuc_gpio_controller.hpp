@@ -72,6 +72,8 @@ public:
 private:
   void publishRobotStatusExt();
 
+  std::string prefix_;
+
   std::shared_ptr<rclcpp::TimerBase> robot_status_ext_timer_;
   rclcpp::CallbackGroup::SharedPtr reentrant_group_;
   std::atomic<bool> shutting_down_{ false };
