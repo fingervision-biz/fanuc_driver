@@ -85,6 +85,8 @@ private:
   void switchControlState(const std::shared_ptr<fanuc_msgs::srv::SwitchControlState::Request>& request,
                           const std::shared_ptr<fanuc_msgs::srv::SwitchControlState::Response>& response);
 
+  std::string prefix_;
+
   std::shared_ptr<rclcpp::TimerBase> robot_status_ext_timer_;
   rclcpp::CallbackGroup::SharedPtr robot_status_group_;
   std::atomic<bool> shutting_down_{ false };

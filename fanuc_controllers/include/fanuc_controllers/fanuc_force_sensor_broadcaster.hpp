@@ -39,6 +39,8 @@ public:
   CallbackReturn on_deactivate(const rclcpp_lifecycle::State& previous_state) override;
 
 private:
+  std::string prefix_;
+
   template <typename T>
   using ServicePtr = std::shared_ptr<rclcpp::Service<T>>;
   ServicePtr<fanuc_msgs::srv::CfgForceSensor> cfg_force_sensor_service_;

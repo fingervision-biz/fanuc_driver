@@ -890,6 +890,8 @@ controller_interface::CallbackReturn FanucGPIOController::on_init()
 {
   get_node()->declare_parameter<std::string>("gpio_config_file_package", "");
   get_node()->declare_parameter<std::string>("gpio_config_file_path", "");
+  get_node()->declare_parameter<std::string>("prefix", "");
+  get_node()->get_parameter("prefix", prefix_);
   return controller_interface::CallbackReturn::SUCCESS;
 }
 
@@ -1079,7 +1081,7 @@ FanucGPIOController::on_configure(const rclcpp_lifecycle::State& previous_state)
     {
       for (uint32_t i = 0; i < analog_io_cmd_i.length; ++i)
       {
-        std::string name = std::string("AO/") + std::to_string(analog_io_cmd_i.start + i);
+        std::string name = prefix_ + "AO/" + std::to_string(analog_io_cmd_i.start + i);
         command_interface_configuration_.names.push_back(name);
         index_analog_io_cmd_[i] = command_interface_index++;
         analog_io_cmd_msg_.values[i + offset].value = 0.0;
@@ -1105,7 +1107,7 @@ FanucGPIOController::on_configure(const rclcpp_lifecycle::State& previous_state)
       for (uint32_t i = 0; i < io_cmd_i.length; ++i)
       {
         std::stringstream name;
-        name << ToString(io_cmd_i.type) << '/' << io_cmd_i.start + i;
+        name << prefix_ << ToString(io_cmd_i.type) << '/' << io_cmd_i.start + i;
         command_interface_configuration_.names.push_back(name.str());
         index_io_cmd_[i + offset] = command_interface_index++;
         io_cmd_msg_.values[i + offset].value = false;
@@ -1130,7 +1132,7 @@ FanucGPIOController::on_configure(const rclcpp_lifecycle::State& previous_state)
     {
       for (uint32_t i = 0; i < num_reg_cmd_i.length; ++i)
       {
-        std::string name = std::string("FloatReg/") + std::to_string(num_reg_cmd_i.start + i);
+        std::string name = prefix_ + "FloatReg/" + std::to_string(num_reg_cmd_i.start + i);
         command_interface_configuration_.names.push_back(name);
         index_num_reg_cmd_[i + offset] = command_interface_index++;
         num_reg_cmd_msg_.values[i + offset].value = 0.0;
@@ -1179,7 +1181,7 @@ FanucGPIOController::on_configure(const rclcpp_lifecycle::State& previous_state)
       for (uint32_t i = 0; i < analog_io_state_i.length; ++i)
       {
         std::stringstream name;
-        name << ToString(analog_io_state_i.type) << '/' << analog_io_state_i.start + i;
+        name << prefix_ << ToString(analog_io_state_i.type) << '/' << analog_io_state_i.start + i;
         state_interface_configuration_.names.push_back(name.str());
         index_analog_io_state_[i + offset] = state_interface_index++;
         analog_io_state_msg_.values[i + offset].io_type.type = ToString(analog_io_state_i.type);
@@ -1205,7 +1207,7 @@ FanucGPIOController::on_configure(const rclcpp_lifecycle::State& previous_state)
       for (uint32_t i = 0; i < io_state_i.length; ++i)
       {
         std::stringstream name;
-        name << ToString(io_state_i.type) << '/' << io_state_i.start + i;
+        name << prefix_ << ToString(io_state_i.type) << '/' << io_state_i.start + i;
         state_interface_configuration_.names.push_back(name.str());
         index_io_state_[i + offset] = state_interface_index++;
         io_state_msg_.values[i + offset].io_type = ToROSMsg(io_state_i.type);
@@ -1230,7 +1232,7 @@ FanucGPIOController::on_configure(const rclcpp_lifecycle::State& previous_state)
     {
       for (uint32_t i = 0; i < num_reg_state_i.length; ++i)
       {
-        std::string name = std::string("FloatReg/") + std::to_string(num_reg_state_i.start + i);
+        std::string name = prefix_ + "FloatReg/" + std::to_string(num_reg_state_i.start + i);
         state_interface_configuration_.names.push_back(name);
         index_num_reg_state_[i + offset] = state_interface_index++;
         num_reg_state_msg_.values[i + offset].value = 0.0;
@@ -1252,25 +1254,25 @@ FanucGPIOController::on_configure(const rclcpp_lifecycle::State& previous_state)
   using fanuc_robot_driver::kStatusTPEnabledType;
 
   index_connection_status_[0] = state_interface_index++;
-  state_interface_configuration_.names.push_back(std::string(kConnectionStatusName) + "/" + kIsConnectedType);
+  state_interface_configuration_.names.push_back(prefix_ + kConnectionStatusName + "/" + kIsConnectedType);
   index_connection_status_[1] = state_interface_index++;
-  state_interface_configuration_.names.push_back(std::string(kConnectionStatusName) + "/" + kMotionCommandType);
+  state_interface_configuration_.names.push_back(prefix_ + kConnectionStatusName + "/" + kMotionCommandType);
 
   index_robot_status_[0] = state_interface_index++;
-  state_interface_configuration_.names.push_back(std::string(kRobotStatusInterfaceName) + "/" +
+  state_interface_configuration_.names.push_back(prefix_ + kRobotStatusInterfaceName + "/" +
                                                  kStatusContactStopModeType);
   index_robot_status_[1] = state_interface_index++;
-  state_interface_configuration_.names.push_back(std::string(kRobotStatusInterfaceName) + "/" + kStatusEStoppedType);
+  state_interface_configuration_.names.push_back(prefix_ + kRobotStatusInterfaceName + "/" + kStatusEStoppedType);
   index_robot_status_[2] = state_interface_index++;
-  state_interface_configuration_.names.push_back(std::string(kRobotStatusInterfaceName) + "/" + kStatusInErrorType);
+  state_interface_configuration_.names.push_back(prefix_ + kRobotStatusInterfaceName + "/" + kStatusInErrorType);
   index_robot_status_[3] = state_interface_index++;
-  state_interface_configuration_.names.push_back(std::string(kRobotStatusInterfaceName) + "/" +
+  state_interface_configuration_.names.push_back(prefix_ + kRobotStatusInterfaceName + "/" +
                                                  kStatusMotionPossibleType);
   index_robot_status_[4] = state_interface_index++;
-  state_interface_configuration_.names.push_back(std::string(kRobotStatusInterfaceName) + "/" + kStatusTPEnabledType);
+  state_interface_configuration_.names.push_back(prefix_ + kRobotStatusInterfaceName + "/" + kStatusTPEnabledType);
 
   index_collaborative_speed_scaling_ = state_interface_index++;
-  state_interface_configuration_.names.push_back(std::string(kRobotStatusInterfaceName) + "/" +
+  state_interface_configuration_.names.push_back(prefix_ + kRobotStatusInterfaceName + "/" +
                                                  kStatusCollaborativeSpeedScalingType);
 
   rt_analog_io_cmd_buffer_.initRT(fanuc_msgs::msg::AnalogIOCmd());
