@@ -14,6 +14,8 @@ namespace fanuc_controllers
 
 controller_interface::CallbackReturn ScaledJointTrajectoryController::on_init()
 {
+  get_node()->declare_parameter<std::string>("prefix", "");
+  get_node()->get_parameter("prefix", prefix_);
   folag_state_ = time_scale_value_.load();
   return JointTrajectoryController::on_init();
 }
@@ -25,9 +27,9 @@ controller_interface::InterfaceConfiguration ScaledJointTrajectoryController::st
   using fanuc_robot_driver::kRobotStatusInterfaceName;
   using fanuc_robot_driver::kStatusCollaborativeSpeedScalingType;
   using fanuc_robot_driver::kStatusMotionPossibleType;
-  state_interface_config.names.push_back(std::string(kRobotStatusInterfaceName) + "/" +
+  state_interface_config.names.push_back(prefix_ + kRobotStatusInterfaceName + "/" +
                                          kStatusCollaborativeSpeedScalingType);
-  state_interface_config.names.push_back(std::string(kRobotStatusInterfaceName) + "/" + kStatusMotionPossibleType);
+  state_interface_config.names.push_back(prefix_ + kRobotStatusInterfaceName + "/" + kStatusMotionPossibleType);
   return state_interface_config;
 }
 
