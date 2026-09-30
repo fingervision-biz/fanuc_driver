@@ -1,36 +1,48 @@
 <?xml version="1.0"?>
 
 <robot xmlns:xacro="http://wiki.ros.org/xacro">
-  <xacro:macro name="crx_control" params="name prefix=''">
+  <xacro:macro name="crx_control" params="name prefix='' initial_positions:=${dict(J1=0.0,J2=0.0,J3=0.0,J4=0.0,J5=0.0,J6=0.0)}">
     <ros2_control name="${name}" type="system">
       <joint name="${prefix}J1">
         <command_interface name="position"/>
-        <state_interface name="position"/>
+        <state_interface name="position">
+          <param name="initial_value">${initial_positions['J1']}</param>
+        </state_interface>
         <state_interface name="velocity"/>
       </joint>
       <joint name="${prefix}J2">
         <command_interface name="position"/>
-        <state_interface name="position"/>
+        <state_interface name="position">
+          <param name="initial_value">${initial_positions['J2']}</param>
+        </state_interface>
         <state_interface name="velocity"/>
       </joint>
       <joint name="${prefix}J3">
         <command_interface name="position"/>
-        <state_interface name="position"/>
+        <state_interface name="position">
+          <param name="initial_value">${initial_positions['J3']}</param>
+        </state_interface>
         <state_interface name="velocity"/>
       </joint>
       <joint name="${prefix}J4">
         <command_interface name="position"/>
-        <state_interface name="position"/>
+        <state_interface name="position">
+          <param name="initial_value">${initial_positions['J4']}</param>
+        </state_interface>
         <state_interface name="velocity"/>
       </joint>
       <joint name="${prefix}J5">
         <command_interface name="position"/>
-        <state_interface name="position"/>
+        <state_interface name="position">
+          <param name="initial_value">${initial_positions['J5']}</param>
+        </state_interface>
         <state_interface name="velocity"/>
       </joint>
       <joint name="${prefix}J6">
         <command_interface name="position"/>
-        <state_interface name="position"/>
+        <state_interface name="position">
+          <param name="initial_value">${initial_positions['J6']}</param>
+        </state_interface>
         <state_interface name="velocity"/>
       </joint>
 
